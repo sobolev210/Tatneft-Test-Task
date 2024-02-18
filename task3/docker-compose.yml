@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis
+    restart: on-failure
+
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+
+    volumes:
+      - fuel_stations_volume:/var/lib/postgresql/data
+
+  server:
+    build: server
+    ports:
+      - "8000:8000"
+    depends_on:
+     - postgres
+
+  celery:
+    build: server
+    command: sh -c  "sleep 10 && python -m celery -A server worker -l info"
+    depends_on:
+      - redis
+      - server
+      - source1
+
+
+  celery-beat:
+    build: server
+    command: celery -A server beat -l info
+    depends_on:
+      - redis
+
+  source1:
+    build: source1
+    volumes:
+      - ${PWD}/source1/main.py:/code/main.py
+
+  source2:
+    build: source2
+
+
+volumes:
+  fuel_stations_volume:

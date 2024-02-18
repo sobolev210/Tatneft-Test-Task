@@ -1,0 +1,208 @@
+openapi: 3.0.3
+info:
+  title: Fuel stations server API
+  version: 1.0.0
+  description: Intermediate server that provides united data from Source1 and Source2
+paths:
+  /api/v1/fuel-stations:
+    get:
+      operationId: v1_fuel_stations_list
+      tags:
+      - v1
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FuelStation'
+          description: ''
+  /api/v1/token/:
+    post:
+      operationId: v1_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/v1/token/refresh/:
+    post:
+      operationId: v1_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    AdditionalService:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 500
+        icon:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - id
+      - name
+    CurrencyEnum:
+      enum:
+      - RUB
+      - USD
+      - EUR
+      - RSD
+      type: string
+      description: |-
+        * `RUB` - RUB
+        * `USD` - USD
+        * `EUR` - EUR
+        * `RSD` - RSD
+    FuelPrice:
+      type: object
+      properties:
+        price:
+          type: number
+          format: double
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        fuel_type:
+          $ref: '#/components/schemas/FuelType'
+      required:
+      - currency
+      - fuel_type
+      - price
+    FuelStation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        coordinate_x:
+          type: number
+          format: double
+        coordinate_y:
+          type: number
+          format: double
+        address:
+          type: string
+          nullable: true
+        image_urls:
+          type: array
+          items:
+            type: string
+            maxLength: 2000
+          nullable: true
+        fuels:
+          type: array
+          items:
+            $ref: '#/components/schemas/FuelPrice'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdditionalService'
+      required:
+      - coordinate_x
+      - coordinate_y
+      - fuels
+      - id
+      - services
+    FuelType:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        icon:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - id
+      - name
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
