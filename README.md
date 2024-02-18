@@ -81,3 +81,5 @@ https://editor.swagger.io/
 
 `docker compose --env-file server/.env.example up -d --build
 `
+
+Для входа в панель администратора нужно создать суперпользователя внутри контейнера
