@@ -155,9 +155,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(hour="3"),
         #"schedule": crontab(minute="*/2"),
     },
-    "source2_load_data_every_minute": {
+    "source2_load_data_every_five_minutes": {
         "task": "apps.core.tasks.load_data_from_source_2",
-        "schedule": crontab(minute="*/1"),
+        "schedule": crontab(minute="*/5"),
         #"schedule": 20.0,
     }
 }
