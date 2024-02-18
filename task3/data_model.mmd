@@ -1,0 +1,35 @@
+---
+Модель данных АЗС
+---
+classDiagram
+class Currency {
+    <<enumeration>>
+    RUB
+    EUR
+    USD
+}
+class FuelStation {
+    Integer: id
+    Float: coordinate_x
+    Float: coordinate_y
+    Integer: number
+    Text: address
+    Array[String]: image_urls
+}
+class AdditionalService {
+    String: name
+    Image: icon
+}
+class FuelType {
+    String: name
+    Image: icon
+}
+class FuelPrice {
+    Float: price
+    Currency: currency
+}
+FuelPrice --> Currency
+AdditionalService -- FuelStation: M-M
+FuelPrice --> FuelType: 1-M
+FuelPrice --> FuelStation: 1-M
+
