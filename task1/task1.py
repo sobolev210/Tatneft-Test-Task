@@ -1,8 +1,8 @@
 import math
 
 
-def is_input_valid(end: str) -> bool:
-    if not end.isdigit():
+def is_input_valid(n: str) -> bool:
+    if not n.isdigit():
         return False
     return True
 
@@ -14,7 +14,7 @@ def is_prime_number(number: int) -> bool:
     return True
 
 
-def find_prime_numbers(n: int) -> list[int] | None:
+def find_prime_numbers(n: int) -> list[int]:
     prime_numbers = list()
     # 1 - не является натуральным, поэтому ее не проверяем
     for number in range(2, n + 1):
