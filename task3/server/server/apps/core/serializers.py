@@ -29,4 +29,4 @@ class FuelStationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FuelStation
-        fields = ["id", "coordinate_x", "coordinate_y", "address", "image_urls", "fuels", "services"]
+        fields = ["id", "coordinate_x", "coordinate_y", "number", "address", "image_urls", "fuels", "services"]
